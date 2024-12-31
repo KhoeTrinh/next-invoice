@@ -8,7 +8,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { auth, signIn } from '@/utils/auth';
-import SubmitButton from '@/components/app/SubmitButton';
+import AdvanceButton from '@/components/app/AdvanceButton';
 import { redirect } from 'next/navigation';
 
 export default async function Login() {
@@ -43,7 +43,7 @@ export default async function Login() {
                                     placeholder='example@gmail.com'
                                 />
                             </div>
-                            <SubmitButton>Submit</SubmitButton>
+                            <AdvanceButton>Submit</AdvanceButton>
                         </form>
                     </CardContent>
                 </Card>

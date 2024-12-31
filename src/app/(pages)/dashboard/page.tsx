@@ -1,6 +1,6 @@
-import SubmitButton from "@/components/app/SubmitButton";
-import { signOut } from "@/utils/auth";
-import { requireUser } from "@/utils/hooks";
+import AdvanceButton from '@/components/app/AdvanceButton';
+import { signOut } from '@/utils/auth';
+import { requireUser } from '@/utils/hooks';
 
 export default async function Dashboard() {
     await requireUser();
@@ -13,7 +13,7 @@ export default async function Dashboard() {
                     await signOut();
                 }}
             >
-                <SubmitButton>Sign out</SubmitButton>
+                <AdvanceButton>Sign out</AdvanceButton>
             </form>
         </div>
     );

@@ -5,9 +5,9 @@ import { ChildrenProps } from '@/utils/type';
 import { Loader2 } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
 
-type SubmitButtonProps = ChildrenProps;
+type AdvanceButtonProps = ChildrenProps;
 
-export default function SubmitButton({ children }: SubmitButtonProps) {
+export default function AdvanceButton({ children }: AdvanceButtonProps) {
     const { pending } = useFormStatus();
     return (
         <>

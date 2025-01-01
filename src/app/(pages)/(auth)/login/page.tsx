@@ -1,15 +1,10 @@
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { auth, signIn } from '@/utils/auth';
-import AdvanceButton from '@/components/app/AdvanceButton';
+import { auth } from '@/utils/auth';
+import BetterButton from '@/components/app/BetterButton';
 import { redirect } from 'next/navigation';
+import { SignIn } from '@/utils/action';
+import BetterCard from '@/components/app/BetterCard';
 
 export default async function Login() {
     const session = await auth();
@@ -17,21 +12,26 @@ export default async function Login() {
         redirect('/dashboard');
     }
     return (
-        <>
-            <div className='flex h-screen w-full items-center justify-center px-4'>
-                <Card className='max-w-sm'>
-                    <CardHeader>
-                        <CardTitle className='text-2xl'>Login</CardTitle>
-                        <CardDescription>
-                            Enter your email below to login in to your account
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
+        <div className='flex h-screen w-full items-center justify-center px-4'>
+            <BetterCard
+                show={{ header: true, content: true, footer: false }}
+                className={{
+                    card: 'max-w-sm',
+                    header: '',
+                    title: 'text-2xl',
+                    description: '',
+                    content: '',
+                    footer: '',
+                }}
+                text={{
+                    card: null,
+                    header: null,
+                    title: 'Login',
+                    description:
+                        'Enter your email below to login in to your account',
+                    content: (
                         <form
-                            action={async (formData) => {
-                                'use server';
-                                await signIn('nodemailer', formData);
-                            }}
+                            action={SignIn}
                             className='flex flex-col gap-y-4'
                         >
                             <div className='flex flex-col gap-y-2'>
@@ -43,11 +43,12 @@ export default async function Login() {
                                     placeholder='example@gmail.com'
                                 />
                             </div>
-                            <AdvanceButton>Submit</AdvanceButton>
+                            <BetterButton>Submit</BetterButton>
                         </form>
-                    </CardContent>
-                </Card>
-            </div>
-        </>
+                    ),
+                    footer: null,
+                }}
+            />
+        </div>
     );
 }

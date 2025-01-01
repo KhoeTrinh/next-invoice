@@ -1,5 +1,5 @@
-import AdvanceButton from '@/components/app/AdvanceButton';
-import { signOut } from '@/utils/auth';
+import BetterButton from '@/components/app/BetterButton';
+import { SignOut } from '@/utils/action';
 import { requireUser } from '@/utils/hooks';
 
 export default async function Dashboard() {
@@ -7,13 +7,8 @@ export default async function Dashboard() {
     return (
         <div>
             <h1>Dashboard</h1>
-            <form
-                action={async () => {
-                    'use server';
-                    await signOut();
-                }}
-            >
-                <AdvanceButton>Sign out</AdvanceButton>
+            <form action={SignOut}>
+                <BetterButton>Sign out</BetterButton>
             </form>
         </div>
     );

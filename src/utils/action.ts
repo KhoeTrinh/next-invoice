@@ -5,6 +5,7 @@ import { requireUser } from '@/utils/hooks';
 import { onboardingSchema } from '@/utils/zodSchema';
 import { parseWithZod } from '@conform-to/zod';
 import { redirect } from 'next/navigation';
+import { signIn, signOut } from './auth';
 
 export async function onboardUser(prevState: unknown, formData: FormData) {
     const session = await requireUser();
@@ -22,4 +23,13 @@ export async function onboardUser(prevState: unknown, formData: FormData) {
         },
     });
     return redirect('/dashboard');
+}
+
+export async function SignIn(formData: FormData) {
+    await signIn('nodemailer', formData);
+    return redirect('/dashboard');
+}
+
+export async function SignOut() {
+    await signOut();
 }

@@ -14,36 +14,21 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
-import { signOut } from '@/utils/auth';
+import { SignOut } from '@/utils/action';
 import { ImageCollection } from '@/utils/collection';
-import prisma from '@/utils/db';
-import { requireUser } from '@/utils/hooks';
+import { getUser, requireUser } from '@/utils/hooks';
 import { ChildrenProps } from '@/utils/type';
 import { Menu, User2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 type DashboardLayoutProps = ChildrenProps;
 
-async function getUser(id: string) {
-    const data = await prisma.user.findUnique({
-        where: {
-            id,
-        },
-        select: {
-            firstName: true,
-            lastName: true,
-            address: true,
-        },
-    });
-    if (!data?.firstName || !data?.lastName || !data?.address)
-        redirect('/onboarding');
-}
 export default async function DashboardLayout({
     children,
 }: DashboardLayoutProps) {
-    await requireUser();
+    const session = await requireUser();
+    await getUser(session.user?.id as string);
     return (
         <div className='grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]'>
             <div className='hidden border-r bg-muted/40 md:block'>
@@ -118,10 +103,7 @@ export default async function DashboardLayout({
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
                                     <form
-                                        action={async () => {
-                                            'use server';
-                                            await signOut();
-                                        }}
+                                        action={SignOut}
                                         className='w-full'
                                     >
                                         <button

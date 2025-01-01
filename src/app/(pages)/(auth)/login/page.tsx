@@ -48,6 +48,7 @@ export default async function Login() {
                     ),
                     footer: null,
                 }}
+                special={false}
             />
         </div>
     );

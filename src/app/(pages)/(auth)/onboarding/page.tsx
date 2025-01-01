@@ -73,6 +73,7 @@ export default function Onboarding() {
                     ),
                     footer: null,
                 }}
+                special={false}
             />
         </div>
     );

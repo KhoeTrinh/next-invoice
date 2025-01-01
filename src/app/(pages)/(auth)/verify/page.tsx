@@ -41,6 +41,7 @@ export default function Verify() {
                         </Link>
                     ),
                 }}
+                special={false}
             />
         </div>
     );

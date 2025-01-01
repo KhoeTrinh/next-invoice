@@ -30,21 +30,31 @@ type BetterCardProps = {
         content: ReactNode;
         footer: ReactNode;
     };
+    special: boolean;
 };
 
-export default function BetterCard({ show, className, text }: BetterCardProps) {
+export default function BetterCard({
+    show,
+    className,
+    text,
+    special,
+}: BetterCardProps) {
     return (
         <Card className={className.card}>
             {text.card}
             {show.header && (
                 <CardHeader className={className.header}>
                     {text.header}
-                    <CardTitle className={className.title}>
-                        {text.title}
-                    </CardTitle>
-                    <CardDescription className={className.description}>
-                        {text.description}
-                    </CardDescription>
+                    {!special && (
+                        <>
+                            <CardTitle className={className.title}>
+                                {text.title}
+                            </CardTitle>
+                            <CardDescription className={className.description}>
+                                {text.description}
+                            </CardDescription>
+                        </>
+                    )}
                 </CardHeader>
             )}
             {show.content && (

@@ -16,13 +16,30 @@ import {
 } from '@/components/ui/sheet';
 import { signOut } from '@/utils/auth';
 import { ImageCollection } from '@/utils/collection';
+import prisma from '@/utils/db';
 import { requireUser } from '@/utils/hooks';
 import { ChildrenProps } from '@/utils/type';
 import { Menu, User2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 type DashboardLayoutProps = ChildrenProps;
+
+async function getUser(id: string) {
+    const data = await prisma.user.findUnique({
+        where: {
+            id,
+        },
+        select: {
+            firstName: true,
+            lastName: true,
+            address: true,
+        },
+    });
+    if (!data?.firstName || !data?.lastName || !data?.address)
+        redirect('/onboarding');
+}
 export default async function DashboardLayout({
     children,
 }: DashboardLayoutProps) {

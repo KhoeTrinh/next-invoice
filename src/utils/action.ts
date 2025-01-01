@@ -2,7 +2,7 @@
 
 import prisma from '@/utils/db';
 import { requireUser } from '@/utils/hooks';
-import { onboardingSchema } from '@/utils/zodSchema';
+import { invoiceSchema, onboardingSchema } from '@/utils/zodSchema';
 import { parseWithZod } from '@conform-to/zod';
 import { redirect } from 'next/navigation';
 import { signIn, signOut } from './auth';
@@ -32,4 +32,33 @@ export async function SignIn(formData: FormData) {
 
 export async function SignOut() {
     await signOut();
+}
+
+export async function createInvoice(prevState: unknown, formData: FormData) {
+    await requireUser();
+    const submission = parseWithZod(formData, {
+        schema: invoiceSchema,
+    });
+    if (submission.status !== 'success') return submission.reply();
+    await prisma.invoice.create({
+        data: {
+            clientAddress: submission.value.clientAddress,
+            clientName: submission.value.clientName,
+            clientEmail: submission.value.clientEmail,
+            currency: submission.value.currency,
+            date: submission.value.date,
+            dueDate: submission.value.dueDate,
+            fromAddress: submission.value.fromAddress,
+            fromName: submission.value.fromName,
+            fromEmail: submission.value.fromEmail,
+            invoiceItemDescription: submission.value.invoiceItemDescription,
+            invoiceItemQuantity: submission.value.invoiceItemQuantity,
+            invoiceItemRate: submission.value.invoiceItemRate,
+            invoiceName: submission.value.invoiceName,
+            invoiceNumber: submission.value.invoiceNumber,
+            status: submission.value.status,
+            total: submission.value.total,
+            note: submission.value.note,
+        },
+    });
 }

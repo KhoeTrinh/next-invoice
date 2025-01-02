@@ -17,15 +17,9 @@ export default async function Login() {
                 show={{ header: true, content: true, footer: false }}
                 className={{
                     card: 'max-w-sm',
-                    header: '',
                     title: 'text-2xl',
-                    description: '',
-                    content: '',
-                    footer: '',
                 }}
                 text={{
-                    card: null,
-                    header: null,
                     title: 'Login',
                     description:
                         'Enter your email below to login in to your account',
@@ -46,7 +40,6 @@ export default async function Login() {
                             <BetterButton>Submit</BetterButton>
                         </form>
                     ),
-                    footer: null,
                 }}
                 special={false}
             />

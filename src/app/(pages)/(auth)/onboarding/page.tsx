@@ -29,15 +29,9 @@ export default function Onboarding() {
                 show={{ header: true, content: true, footer: false }}
                 className={{
                     card: 'max-w-sm mx-auto',
-                    header: '',
                     title: 'text-xl',
-                    description: '',
-                    content: '',
-                    footer: '',
                 }}
                 text={{
-                    card: null,
-                    header: null,
                     title: 'You are almost finished!',
                     description: 'Enter your information to create an account',
                     content: (
@@ -71,7 +65,6 @@ export default function Onboarding() {
                             <BetterButton>Finish Onboarding</BetterButton>
                         </form>
                     ),
-                    footer: null,
                 }}
                 special={false}
             />

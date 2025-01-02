@@ -15,20 +15,20 @@ type BetterCardProps = {
         footer: boolean;
     };
     className: {
-        card: string;
-        header: string;
-        title: string;
-        description: string;
-        content: string;
-        footer: string;
+        card?: string;
+        header?: string;
+        title?: string;
+        description?: string;
+        content?: string;
+        footer?: string;
     };
     text: {
-        card: ReactNode;
-        header: ReactNode;
-        title: ReactNode;
-        description: ReactNode;
-        content: ReactNode;
-        footer: ReactNode;
+        card?: ReactNode;
+        header?: ReactNode;
+        title?: ReactNode;
+        description?: ReactNode;
+        content?: ReactNode;
+        footer?: ReactNode;
     };
     special: boolean;
 };

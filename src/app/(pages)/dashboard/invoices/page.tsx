@@ -12,16 +12,8 @@ export default function Invoices() {
     return (
         <BetterCard
             show={{ header: true, content: true, footer: false }}
-            className={{
-                card: '',
-                header: '',
-                title: '',
-                description: '',
-                content: '',
-                footer: '',
-            }}
+            className={{}}
             text={{
-                card: null,
                 header: (
                     <div className='flex items-center justify-between'>
                         <div>
@@ -40,10 +32,7 @@ export default function Invoices() {
                         </Link>
                     </div>
                 ),
-                title: null,
-                description: null,
                 content: <InvoiceList />,
-                footer: null,
             }}
             special={true}
         />

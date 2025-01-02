@@ -6,6 +6,8 @@ import { invoiceSchema, onboardingSchema } from '@/utils/zodSchema';
 import { parseWithZod } from '@conform-to/zod';
 import { redirect } from 'next/navigation';
 import { signIn, signOut } from './auth';
+import { emailClient } from './mailtrap';
+import { formatCurrency, formatTime } from './format';
 
 export async function onboardUser(prevState: unknown, formData: FormData) {
     const session = await requireUser();
@@ -62,5 +64,27 @@ export async function createInvoice(prevState: unknown, formData: FormData) {
             userId: session.user?.id,
         },
     });
+    const sender = {
+        email: 'Shinne@gmail.com',
+        name: 'Shinee',
+    };
+    emailClient.send({
+        from: sender,
+        to: [{ email: 'kelvintrinh09@gmail.com' }],
+        template_uuid: '34e8f36c-0a6b-4591-8177-2c1650743c36',
+        template_variables: {
+            clientName: submission.value.clientName,
+            invoiceNumber: submission.value.invoiceNumber,
+            dueDate: formatTime(submission.value.dueDate, {
+                date: 'long',
+            }),
+            totalAmount: formatCurrency({
+                num: submission.value.total,
+                currency: submission.value.currency,
+            }),
+            invoiceLink: 'https://invoice-app.vercel.app/dashboard/invoices',
+        },
+    });
+
     return redirect('/dashboard/invoices');
 }

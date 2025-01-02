@@ -13,12 +13,8 @@ export default function Verify() {
                     card: 'w-[22.5rem] px-5',
                     header: 'text-center',
                     title: 'text-2xl font-bold',
-                    description: '',
-                    content: '',
-                    footer: '',
                 }}
                 text={{
-                    card: null,
                     header: (
                         <div className='mb-4 mx-auto flex size-20 items-center justify-center rounded-full bg-blue-100'>
                             <Mail className='size-12 text-blue-500' />

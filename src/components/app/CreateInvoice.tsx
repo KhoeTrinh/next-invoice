@@ -22,6 +22,7 @@ import { createInvoice } from '@/utils/action';
 import { useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { invoiceSchema } from '@/utils/zodSchema';
+import { formatCurrency, formatTime } from '@/utils/format';
 
 export default function CreateInvoice() {
     const [lastResult, action] = useActionState(createInvoice, undefined);
@@ -36,6 +37,14 @@ export default function CreateInvoice() {
         shouldRevalidate: 'onInput',
     });
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [rate, setRate] = useState('');
+    const [quantity, setQuantity] = useState('');
+    const [currency, setCurrency] = useState<'USD' | 'EUR'>('USD');
+    const total = (Number(quantity) || 0) * (Number(rate) || 0);
+    const calculateTotal = formatCurrency({
+        num: total,
+        currency,
+    });
     return (
         <Card className='w-full max-w-4xl mx-auto '>
             <CardContent className='p-6'>
@@ -45,6 +54,16 @@ export default function CreateInvoice() {
                     onSubmit={form.onSubmit}
                     noValidate
                 >
+                    <input
+                        type='hidden'
+                        name={fields.date.name}
+                        value={selectedDate.toISOString()}
+                    />
+                    <input
+                        type='hidden'
+                        name={fields.total.name}
+                        value={total}
+                    />
                     <div className='grid gap-1 w-fit mb-6'>
                         <div className='flex items-center gap-4'>
                             <Badge variant='secondary'>Draft</Badge>
@@ -86,6 +105,9 @@ export default function CreateInvoice() {
                                 defaultValue='USD'
                                 name={fields.currency.name}
                                 key={fields.currency.key}
+                                onValueChange={(value: 'USD' | 'EUR') =>
+                                    setCurrency(value)
+                                }
                             >
                                 <SelectTrigger>
                                     <SelectValue placeholder='Select Currency' />
@@ -187,13 +209,11 @@ export default function CreateInvoice() {
                                 <PopoverTrigger asChild>
                                     <Button
                                         variant='outline'
-                                        className='w-[280px] text-left justify-start'
+                                        className='w-[280px] md:w-auto text-left justify-start'
                                     >
                                         <CalendarIcon />
                                         {selectedDate ? (
-                                            new Intl.DateTimeFormat('en-US', {
-                                                dateStyle: 'long',
-                                            }).format(selectedDate)
+                                            formatTime(selectedDate, {date: 'long', time: 'short'})
                                         ) : (
                                             <p>Pick a Date</p>
                                         )}
@@ -210,10 +230,17 @@ export default function CreateInvoice() {
                                     />
                                 </PopoverContent>
                             </Popover>
+                            <p className='text-sm text-red-500'>
+                                {fields.date.errors}
+                            </p>
                         </div>
                         <div>
                             <Label>Invoice Due</Label>
-                            <Select>
+                            <Select
+                                name={fields.dueDate.name}
+                                key={fields.dueDate.key}
+                                defaultValue={fields.dueDate.initialValue}
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder='Select Due Date' />
                                 </SelectTrigger>
@@ -227,6 +254,9 @@ export default function CreateInvoice() {
                                     <SelectItem value='60'>Net 60</SelectItem>
                                 </SelectContent>
                             </Select>
+                            <p className='text-sm text-red-500'>
+                                {fields.dueDate.errors}
+                            </p>
                         </div>
                     </div>
 
@@ -239,25 +269,51 @@ export default function CreateInvoice() {
                         </div>
                         <div className='grid grid-cols-12 gap-4 mb-4'>
                             <div className='col-span-6'>
-                                <Textarea placeholder='Item name & description' />
-                            </div>
-                            <div className='col-span-2'>
-                                <Input
-                                    type='number'
-                                    placeholder='0'
+                                <Textarea
+                                    name={fields.invoiceItemDescription.name}
+                                    key={fields.invoiceItemDescription.key}
+                                    defaultValue={
+                                        fields.invoiceItemDescription
+                                            .initialValue
+                                    }
+                                    placeholder='Item name & description'
                                 />
+                                <p className='text-sm text-red-500'>
+                                    {fields.invoiceItemDescription.errors}
+                                </p>
                             </div>
                             <div className='col-span-2'>
                                 <Input
+                                    name={fields.invoiceItemQuantity.name}
+                                    key={fields.invoiceItemQuantity.key}
                                     type='number'
                                     placeholder='0'
+                                    value={quantity}
+                                    onChange={(e) =>
+                                        setQuantity(e.target.value)
+                                    }
                                 />
+                                <p className='text-sm text-red-500'>
+                                    {fields.invoiceItemQuantity.errors}
+                                </p>
                             </div>
                             <div className='col-span-2'>
                                 <Input
+                                    name={fields.invoiceItemRate.name}
+                                    key={fields.invoiceItemRate.key}
                                     type='number'
                                     placeholder='0'
+                                    value={rate}
+                                    onChange={(e) => setRate(e.target.value)}
+                                />
+                                <p className='text-sm text-red-500'>
+                                    {fields.invoiceItemRate.errors}
+                                </p>
+                            </div>
+                            <div className='col-span-2'>
+                                <Input
                                     disabled
+                                    value={calculateTotal}
                                 />
                             </div>
                         </div>
@@ -266,12 +322,12 @@ export default function CreateInvoice() {
                         <div className='w-1/3'>
                             <div className='flex justify-between py-2'>
                                 <span>Subtotal</span>
-                                <span>$1M</span>
+                                <span>{calculateTotal} </span>
                             </div>
                             <div className='flex justify-between py-2 border-t'>
-                                <span>Total (USD)</span>
+                                <span>Total ({currency})</span>
                                 <span className='font-medium underline underline-offset-2'>
-                                    $1B
+                                    {calculateTotal}
                                 </span>
                             </div>
                         </div>
@@ -279,7 +335,15 @@ export default function CreateInvoice() {
 
                     <div>
                         <Label>Note</Label>
-                        <Textarea placeholder='Add your note here...' />
+                        <Textarea
+                            name={fields.note.name}
+                            key={fields.note.key}
+                            defaultValue={fields.note.initialValue}
+                            placeholder='Add your note here...'
+                        />
+                        <p className='text-sm text-red-500'>
+                            {fields.note.errors}
+                        </p>
                     </div>
                     <div className='flex items-center justify-end mt-6 '>
                         <div>

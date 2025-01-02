@@ -1,3 +1,4 @@
+import { getData, requireUser } from '@/utils/hooks';
 import {
     Table,
     TableBody,
@@ -7,8 +8,12 @@ import {
     TableRow,
 } from '../ui/table';
 import InvoiceActions from './InvoiceActions';
+import { formatCurrency, formatTime } from '@/utils/format';
+import { Badge } from '../ui/badge';
 
-export default function InvoiceList() {
+export default async function InvoiceList() {
+    const session = await requireUser();
+    const data = await getData(session.user?.id as string);
     return (
         <Table>
             <TableHeader>
@@ -22,16 +27,27 @@ export default function InvoiceList() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow>
-                    <TableCell>#1</TableCell>
-                    <TableCell>Khoa</TableCell>
-                    <TableCell>$1M</TableCell>
-                    <TableCell>Pending</TableCell>
-                    <TableCell>1/1/2025</TableCell>
-                    <TableCell className='text-right'>
-                        <InvoiceActions />
-                    </TableCell>
-                </TableRow>
+                {data.map((invoice) => (
+                    <TableRow key={invoice.id}>
+                        <TableCell>#{invoice.invoiceNumber}</TableCell>
+                        <TableCell>{invoice.clientName}</TableCell>
+                        <TableCell>
+                            {formatCurrency({
+                                num: invoice.total,
+                                currency: invoice.currency as 'USD' | 'EUR',
+                            })}
+                        </TableCell>
+                        <TableCell>
+                            <Badge>{invoice.status}</Badge>
+                        </TableCell>
+                        <TableCell>
+                            {formatTime(invoice.createdAt, { date: 'short' })}
+                        </TableCell>
+                        <TableCell className='text-right'>
+                            <InvoiceActions />
+                        </TableCell>
+                    </TableRow>
+                ))}
             </TableBody>
         </Table>
     );

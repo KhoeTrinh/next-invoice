@@ -35,7 +35,7 @@ export async function SignOut() {
 }
 
 export async function createInvoice(prevState: unknown, formData: FormData) {
-    await requireUser();
+    const session = await requireUser();
     const submission = parseWithZod(formData, {
         schema: invoiceSchema,
     });
@@ -59,6 +59,8 @@ export async function createInvoice(prevState: unknown, formData: FormData) {
             status: submission.value.status,
             total: submission.value.total,
             note: submission.value.note,
+            userId: session.user?.id,
         },
     });
+    return redirect('/dashboard/invoices');
 }

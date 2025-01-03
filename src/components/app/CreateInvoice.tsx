@@ -1,11 +1,9 @@
 'use client';
 
 import { CalendarIcon } from 'lucide-react';
-import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { Input } from '../ui/input';
-import { Label } from '../ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import {
     Select,
@@ -23,6 +21,7 @@ import { useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { invoiceSchema } from '@/utils/zodSchema';
 import { formatCurrency, formatTime } from '@/utils/format';
+import DivWithLabel from './DivWithLabel';
 
 export default function CreateInvoice() {
     const [lastResult, action] = useActionState(createInvoice, undefined);
@@ -65,22 +64,24 @@ export default function CreateInvoice() {
                         value={total}
                     />
                     <div className='grid gap-1 w-fit mb-6'>
-                        <div className='flex items-center gap-4'>
-                            <Badge variant='secondary'>Draft</Badge>
+                        <DivWithLabel
+                            text='Draft'
+                            badge
+                            className='flex items-center gap-4'
+                        >
                             <Input
                                 name={fields.invoiceName.name}
                                 key={fields.invoiceName.key}
                                 defaultValue={fields.invoiceName.initialValue}
                                 placeholder='...'
                             />
-                        </div>
+                        </DivWithLabel>
                         <p className='text-sm text-red-500'>
-                            {fields.invoiceName.errors}{' '}
+                            {fields.invoiceName.errors}
                         </p>
                     </div>
                     <div className='grid md:grid-cols-3 gap-6 mb-6'>
-                        <div>
-                            <Label>Invoice No.</Label>
+                        <DivWithLabel text='Invoice No.'>
                             <div className='flex'>
                                 <span className='px-3 border border-r-0 rounded-l-md bg-muted flex items-center'>
                                     #
@@ -98,9 +99,8 @@ export default function CreateInvoice() {
                             <p className='text-sm text-red-500'>
                                 {fields.invoiceNumber.errors}
                             </p>
-                        </div>
-                        <div>
-                            <Label>Currency</Label>
+                        </DivWithLabel>
+                        <DivWithLabel text='Currency'>
                             <Select
                                 defaultValue='USD'
                                 name={fields.currency.name}
@@ -124,11 +124,10 @@ export default function CreateInvoice() {
                             <p className='text-sm text-red-500'>
                                 {fields.currency.errors}
                             </p>
-                        </div>
+                        </DivWithLabel>
                     </div>
                     <div className='grid md:grid-cols-2 gap-6 mb-6'>
-                        <div>
-                            <Label>From</Label>
+                        <DivWithLabel text='From'>
                             <div className='space-y-2'>
                                 <Input
                                     name={fields.fromName.name}
@@ -160,9 +159,8 @@ export default function CreateInvoice() {
                                     {fields.fromAddress.errors}
                                 </p>
                             </div>
-                        </div>
-                        <div>
-                            <Label>To</Label>
+                        </DivWithLabel>
+                        <DivWithLabel text='To'>
                             <div className='space-y-2'>
                                 <Input
                                     name={fields.clientName.name}
@@ -198,13 +196,13 @@ export default function CreateInvoice() {
                                     {fields.clientAddress.errors}
                                 </p>
                             </div>
-                        </div>
+                        </DivWithLabel>
                     </div>
                     <div className='grid md:grid-cols-2 gap-6 mb-6'>
-                        <div>
-                            <div>
-                                <Label>Date</Label>
-                            </div>
+                        <DivWithLabel
+                            text='Date'
+                            special
+                        >
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
@@ -213,7 +211,10 @@ export default function CreateInvoice() {
                                     >
                                         <CalendarIcon />
                                         {selectedDate ? (
-                                            formatTime(selectedDate, {date: 'long', time: 'short'})
+                                            formatTime(selectedDate, {
+                                                date: 'long',
+                                                time: 'short',
+                                            })
                                         ) : (
                                             <p>Pick a Date</p>
                                         )}
@@ -233,9 +234,8 @@ export default function CreateInvoice() {
                             <p className='text-sm text-red-500'>
                                 {fields.date.errors}
                             </p>
-                        </div>
-                        <div>
-                            <Label>Invoice Due</Label>
+                        </DivWithLabel>
+                        <DivWithLabel text='Invoice Due'>
                             <Select
                                 name={fields.dueDate.name}
                                 key={fields.dueDate.key}
@@ -257,7 +257,7 @@ export default function CreateInvoice() {
                             <p className='text-sm text-red-500'>
                                 {fields.dueDate.errors}
                             </p>
-                        </div>
+                        </DivWithLabel>
                     </div>
 
                     <div>
@@ -332,9 +332,7 @@ export default function CreateInvoice() {
                             </div>
                         </div>
                     </div>
-
-                    <div>
-                        <Label>Note</Label>
+                    <DivWithLabel text='Note'>
                         <Textarea
                             name={fields.note.name}
                             key={fields.note.key}
@@ -344,7 +342,7 @@ export default function CreateInvoice() {
                         <p className='text-sm text-red-500'>
                             {fields.note.errors}
                         </p>
-                    </div>
+                    </DivWithLabel>
                     <div className='flex items-center justify-end mt-6 '>
                         <div>
                             <BetterButton>Sent Invoice to Client</BetterButton>

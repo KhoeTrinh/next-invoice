@@ -7,13 +7,30 @@ import { getUser, requireUser } from '@/utils/hooks';
 import { ChildrenProps } from '@/utils/type';
 import { User2 } from 'lucide-react';
 
-type DashboardLayoutProps = ChildrenProps;
-
-export default async function DashboardLayout({
-    children,
-}: DashboardLayoutProps) {
+export default async function DashboardLayout({ children }: ChildrenProps) {
     const session = await requireUser();
-    await getUser(session.user?.id as string);
+    await getUser(session.user?.id || '');
+
+    const menuItems = [
+        { link: '/dashboard', text: 'Dashboard' },
+        { link: '/dashboard/invoices', text: 'Invoices', separator: true },
+        {
+            special: (
+                <form
+                    action={SignOut}
+                    className='w-full'
+                >
+                    <button
+                        type='submit'
+                        className='w-full text-left'
+                    >
+                        Logout
+                    </button>
+                </form>
+            ),
+        },
+    ];
+
     return (
         <div className='grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]'>
             <Navbar />
@@ -33,32 +50,7 @@ export default async function DashboardLayout({
                                         <User2 />
                                     </Button>
                                 ),
-                                content: [
-                                    {
-                                        link: '/dashboard',
-                                        text: 'Dashboard',
-                                    },
-                                    {
-                                        link: '/dashboard/invoices',
-                                        text: 'Invoices',
-                                        separator: true,
-                                    },
-                                    {
-                                        special: (
-                                            <form
-                                                action={SignOut}
-                                                className='w-full'
-                                            >
-                                                <button
-                                                    type='submit'
-                                                    className='w-full text-left'
-                                                >
-                                                    Logout
-                                                </button>
-                                            </form>
-                                        ),
-                                    },
-                                ],
+                                content: menuItems,
                             }}
                             special='My account'
                         />
